@@ -10,10 +10,10 @@ use pwb::data::{Values,Storage};
 fn main() {
     let mut line = String::new();
 
-    let garbage = io::stdin().read_line(&mut line).unwrap();
-    let garbage = io::stdin().read_line(&mut line).unwrap();
-    let garbage = io::stdin().read_line(&mut line).unwrap();
-    let garbage = io::stdin().read_line(&mut line).unwrap();
+    // That damn range is exclusive at the end... So it really means 4 times!
+    for _ in 1..5 {
+        let garbage = io::stdin().read_line(&mut line).unwrap();
+    }
 
     let (values, storage, recipes, fluid) =
         parser::input(line.as_str()).unwrap();
