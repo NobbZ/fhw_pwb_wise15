@@ -1,0 +1,11 @@
+[package]
+name = "pwb_ws_15"
+version = "0.1.0"
+authors = ["Norbert Melzer <timmelzer@gmail.com>"]
+
+[[bin]]
+name = "pwb_runner"
+doc = false
+
+[dependencies]
+peg = "~0.3.3"
