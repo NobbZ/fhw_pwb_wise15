@@ -19,10 +19,12 @@ pub struct Storage {
 
 /// A Recipe shows which items can be produced by combining other items, also it
 /// tells how much cooling fluid will be consumed in the process.
+#[derive(PartialEq,Eq,Debug)]
 pub struct Recipes {
     val: Vec<Recipe>
 }
 
+#[derive(PartialEq,Eq,Debug)]
 pub struct Recipe {
     ingredients: Vec<usize>,
     output: Vec<usize>,
@@ -49,6 +51,16 @@ impl Recipes {
     pub fn new(content: Vec<Recipe>) -> Self {
         Recipes {
             val: content
+        }
+    }
+}
+
+impl Recipe {
+    pub fn new(input: Vec<usize>, output: Vec<usize>, fluid: usize) -> Self {
+        Recipe {
+            ingredients: input,
+            output: output,
+            fluid: fluid
         }
     }
 }

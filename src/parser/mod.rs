@@ -1,34 +1,40 @@
 use super::data::{Values,Storage,Recipes};
 
 peg! internal(r#"
-    use super::super::data::{Values,Storage,Recipes};
-    
+    use super::super::data::{Values,Storage,Recipes,Recipe};
+
     #[pub]
     input -> (Values, Storage, Recipes, usize) =
     	v:values nl s:storage nl r:recipes nl f:fluid nl { (v, s, r, f) }
-    	
+
     #[pub]
     values -> Values =
     	"[" vs:value ** "," "]" {Values::new(vs)}
-    
+
     #[pub]
     storage -> Storage =
     	"[" cs:counts ** "," "]" {Storage::new(cs)}
-    
+
     #[pub]
     recipes -> Recipes =
-    	. {Recipes::new(vec![])}
-    
+    	"[" rs:recipe ** "," "]" {Recipes::new(rs)}
+
     #[pub]
     fluid -> usize =
     	[0-9]+ { match_str.parse().unwrap() }
-    	
+
     value -> isize =
     	"-"? [0-9]+ { match_str.parse().unwrap() }
-    
+
     counts -> usize =
     	[0-9]+ { match_str.parse().unwrap() }
-    
+
+    recipe -> Recipe =
+        "(" i:item_list "," o:item_list "," f:fluid ")" { Recipe::new(i, o, f) }
+
+    item_list -> Vec<usize> =
+        "[" f:fluid ** "," "]" { f }
+
     nl -> () =
     	"\r" / "\r\n" / "\n\r"
 "#);
