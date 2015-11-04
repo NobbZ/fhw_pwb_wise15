@@ -36,7 +36,7 @@ peg! internal(r#"
         "[" f:fluid ** "," "]" { f }
 
     nl -> () =
-    	"\r" / "\r\n" / "\n\r"
+    	"\n" / "\r\n" / "\n\r"
 "#);
 
 pub fn input(input: &str) -> Result<(Values, Storage, Recipes, usize), internal::ParseError> {
