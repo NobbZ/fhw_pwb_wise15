@@ -13,7 +13,7 @@ peg! internal(r#"
     
     #[pub]
     storage -> Storage =
-    	. {Storage::new(vec![])}
+    	"[" cs:counts ** "," "]" {Storage::new(cs)}
     
     #[pub]
     recipes -> Recipes =
@@ -25,6 +25,9 @@ peg! internal(r#"
     	
     value -> isize =
     	"-"? [0-9]+ { match_str.parse().unwrap() }
+    
+    counts -> usize =
+    	[0-9]+ { match_str.parse().unwrap() }
     
     nl -> () =
     	"\r" / "\r\n" / "\n\r"

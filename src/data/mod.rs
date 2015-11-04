@@ -12,6 +12,7 @@ pub struct Values {
 /// A list of amounts that are in storage.
 ///
 /// The number of items of item x is at position x of the Storage
+#[derive(PartialEq,Eq,Debug)]
 pub struct Storage {
     val: Vec<usize>
 }
