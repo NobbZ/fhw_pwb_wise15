@@ -1,21 +1,23 @@
 use ramp::int::Int;
 use std::sync::Arc;
 use super::storage::Storage;
+use ::data::values::Values;
 use super::Recipes;
 
-pub struct Node {
+pub struct Node<'a> {
     store: Storage,
-    children: Vec<ChildLink>,
+    children: Vec<ChildLink<'a>>,
+    values: &'a Values,
 }
 
-pub enum ChildLink {
-    Producable(Option<Arc<Node>>),
+pub enum ChildLink<'a> {
+    Producable(Option<Arc<Node<'a>>>),
     Impossible,
     Finished(Int, Vec<usize>),
 }
 
-impl Node {
-    pub fn new(store: Storage, recipes: &Recipes) -> Self {
+impl<'a> Node<'a> {
+    pub fn new(store: Storage, vals: &'a Values, recipes: &Recipes) -> Self {
         let mut children: Vec<ChildLink> = Vec::new();
 
         for r in &recipes.val {
@@ -29,6 +31,21 @@ impl Node {
         Node {
             store: store,
             children: children,
+            values: vals,
         }
+    }
+
+    pub fn get_overall_value(&self) -> Int {
+        let store_iter = self.store.iter();
+        let zipped = self.values.iter().zip(store_iter.into_iter());
+
+        zipped.fold(Int::zero(), |acc: Int, (&value, &count)| {
+            let current = Int::from(value) * Int::from(count);
+            if current >= 0 {
+                acc + current
+            } else {
+                acc + current.clone() * current
+            }
+        })
     }
 }
