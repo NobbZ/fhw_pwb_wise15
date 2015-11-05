@@ -79,9 +79,8 @@ fn input_test_001 () {
     let rcp1 = Recipe::new(vec![0,0], vec![1], 1);
     let rcp2 = Recipe::new(vec![0,1], vec![2], 5);
     let exp = (Values::new(vec![10,12,25]),
-        Storage::new(vec![7,3,0]),
-        Recipes::new(vec![rcp1,rcp2]),
-        23);
+        Storage::new(vec![7,3,0]).set_fluid(23),
+        Recipes::new(vec![rcp1,rcp2]));
     assert_eq!(input("[10,12,25]\n[7,3,0]\n[([0,0],[1],1),([0,1],[2],5)]\n23\n"), Ok(exp))
 }
 
@@ -90,9 +89,8 @@ fn input_test_002 () {
     let rcp1 = Recipe::new(vec![], vec![0], 1);
     let rcp2 = Recipe::new(vec![], vec![1], 2);
     let exp = (Values::new(vec![1, 3]),
-        Storage::new(vec![5,5]),
-        Recipes::new(vec![rcp1,rcp2]),
-        1414);
+        Storage::new(vec![5,5]).set_fluid(1414),
+        Recipes::new(vec![rcp1,rcp2]));
     assert_eq!(input("[1,3]\n[5,5]\n[([],[0],1),([],[1],2)]\n1414\n"), Ok(exp))
 }
 
@@ -101,9 +99,8 @@ fn input_test_003 () {
     let rcp1 = Recipe::new(vec![0], vec![1], 1);
     let rcp2 = Recipe::new(vec![1], vec![2], 1);
     let exp = (Values::new(vec![1, 2, 3]),
-        Storage::new(vec![1,0,0]),
-        Recipes::new(vec![rcp1,rcp2]),
-        2);
+        Storage::new(vec![1,0,0]).set_fluid(2),
+        Recipes::new(vec![rcp1,rcp2]));
     assert_eq!(input("[1,2,3]\n[1,0,0]\n[([0],[1],1),([1],[2],1)]\n2\n"), Ok(exp))
 }
 
@@ -111,9 +108,8 @@ fn input_test_003 () {
 fn input_test_004 () {
     let rcp = Recipe::new(vec![0,1], vec![0,2], 5);
     let exp = (Values::new(vec![0,5,20]),
-        Storage::new(vec![1,10,0]),
-        Recipes::new(vec![rcp]),
-        1337);
+        Storage::new(vec![1,10,0]).set_fluid(1337),
+        Recipes::new(vec![rcp]));
     assert_eq!(input("[0,5,20]\n[1,10,0]\n[([0,1],[0,2],5)]\n1337\n"), Ok(exp))
 }
 
@@ -121,9 +117,8 @@ fn input_test_004 () {
 fn input_test_005 () {
     let rcp = Recipe::new(vec![0], vec![1], 1);
     let exp = (Values::new(vec![5,10]),
-        Storage::new(vec![0,0]),
-        Recipes::new(vec![rcp]),
-        2718);
+        Storage::new(vec![0,0]).set_fluid(2718),
+        Recipes::new(vec![rcp]));
     assert_eq!(input("[5,10]\n[0,0]\n[([0],[1],1)]\n2718\n"), Ok(exp))
 }
 
@@ -131,8 +126,7 @@ fn input_test_005 () {
 fn input_test_006 () {
     let rcp = Recipe::new(vec![0], vec![0], 1);
     let exp = (Values::new(vec![100]),
-        Storage::new(vec![1]),
-        Recipes::new(vec![rcp]),
-        42);
+        Storage::new(vec![1]).set_fluid(42),
+        Recipes::new(vec![rcp]));
     assert_eq!(input("[100]\n[1]\n[([0],[0],1)]\n42\n"), Ok(exp));
 }

@@ -15,11 +15,11 @@ fn main() {
     }
 
     // Lets assume that there is only valid input during the contest
-    let (values, storage, recipes, fluid) =
+    let (values, storage, recipes) =
         parser::input(line.as_str()).unwrap();
 
     println!("{:?}", values);
     println!("{:?}", storage);
     println!("{:?}", recipes);
-    println!("{:?}", fluid);
+    println!("{:?}", storage.get_fluid());
 }

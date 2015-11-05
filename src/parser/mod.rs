@@ -6,8 +6,8 @@ peg! internal(r#"
     use super::super::data::{Values,Recipes,Recipe};
 
     #[pub]
-    input -> (Values, Storage, Recipes, usize) =
-    	v:values nl s:storage nl r:recipes nl f:fluid nl { (v, s, r, f) }
+    input -> (Values, Storage, Recipes) =
+    	v:values nl s:storage nl r:recipes nl f:fluid nl { (v, s.set_fluid(f), r) }
 
     #[pub]
     values -> Values =
@@ -41,7 +41,7 @@ peg! internal(r#"
     	"\n" / "\r\n" / "\n\r"
 "#);
 
-pub fn input(input: &str) -> Result<(Values, Storage, Recipes, usize), internal::ParseError> {
+pub fn input(input: &str) -> Result<(Values, Storage, Recipes), internal::ParseError> {
     internal::input(input)
 }
 
