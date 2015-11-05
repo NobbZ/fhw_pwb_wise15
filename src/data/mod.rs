@@ -2,16 +2,9 @@
 
 pub mod tree;
 pub mod storage;
+pub mod values;
 
 use self::storage::Storage;
-
-/// A list of the items values.
-///
-/// The list is indexed by the ID of an item.
-#[derive(PartialEq,Eq,Debug)]
-pub struct Values {
-    val: Vec<isize>
-}
 
 /// What recipes are available during this game round?
 #[derive(PartialEq,Eq,Debug)]
@@ -27,14 +20,6 @@ pub struct Recipe {
     ingredients: Vec<usize>,
     output: Vec<usize>,
     fluid: usize,
-}
-
-impl Values {
-    pub fn new(content: Vec<isize>) -> Self {
-        Values {
-            val: content
-        }
-    }
 }
 
 impl Recipes {
@@ -55,7 +40,7 @@ impl Recipe {
     }
 
     pub fn producable(&self, store: &Storage) -> bool {
-        let mut nstore = store.clone();
+        let nstore = store.clone();
 
         for i in &self.ingredients {
             if !nstore.consume(*i) {
