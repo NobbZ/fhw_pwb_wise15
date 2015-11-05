@@ -11,9 +11,10 @@ fn main() {
 
     // That damn range is exclusive at the end... So it really means 4 times!
     for _ in 1..5 {
-        let garbage = io::stdin().read_line(&mut line).unwrap();
+        let _garbage = io::stdin().read_line(&mut line).unwrap();
     }
 
+    // Lets assume that there is only valid input during the contest
     let (values, storage, recipes, fluid) =
         parser::input(line.as_str()).unwrap();
 
