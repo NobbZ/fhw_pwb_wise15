@@ -9,3 +9,4 @@ doc = false
 
 [dependencies]
 peg = "~0.3.3"
+ramp = "~0.2.0"
