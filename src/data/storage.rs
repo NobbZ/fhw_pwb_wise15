@@ -1,4 +1,6 @@
 use std::cell::{Cell,RefCell};
+use std::slice::Iter;
+use data::iter::VecRefIter;
 
 /// A list of amounts that are in storage.
 ///
@@ -51,5 +53,9 @@ impl Storage {
         } else {
             false
         }
+    }
+
+    pub fn iter(&self) -> VecRefIter<usize> {
+        VecRefIter { r: self.store.borrow() }
     }
 }

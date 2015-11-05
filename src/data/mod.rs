@@ -3,6 +3,7 @@
 pub mod tree;
 pub mod storage;
 pub mod values;
+pub mod iter;
 
 use self::storage::Storage;
 
