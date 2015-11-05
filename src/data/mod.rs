@@ -1,5 +1,7 @@
 //! Datatypes used for Bookkeeping stuff.
 
+pub mod tree;
+
 /// A list of the items values.
 ///
 /// The list is indexed by the ID of an item.
@@ -12,18 +14,21 @@ pub struct Values {
 /// A list of amounts that are in storage.
 ///
 /// The number of items of item x is at position x of the Storage
-#[derive(PartialEq,Eq,Debug)]
+#[derive(PartialEq,Eq,Debug,Clone)]
 pub struct Storage {
-    val: Vec<usize>
+    store: Vec<usize>,
+    fluid: usize,
 }
 
-/// A Recipe shows which items can be produced by combining other items, also it
-/// tells how much cooling fluid will be consumed in the process.
+/// What recipes are available during this game round?
 #[derive(PartialEq,Eq,Debug)]
 pub struct Recipes {
-    val: Vec<Recipe>
+    val: Vec<Recipe>,
 }
 
+/// A recipe determines what ressources are consumed during a craft and which
+/// ones are produced, also it can tell you how much fluid will get consumed
+/// during this process.
 #[derive(PartialEq,Eq,Debug)]
 pub struct Recipe {
     ingredients: Vec<usize>,
@@ -42,7 +47,18 @@ impl Values {
 impl Storage {
     pub fn new(content: Vec<usize>) -> Self {
         Storage {
-            val: content
+            store: content,
+            fluid: 0,
+        }
+    }
+
+
+    pub fn consume(&mut self, id: usize) -> bool {
+        if self.store[id] == 0 {
+            false
+        } else {
+            self.store[id] = self.store[id] - 1;
+            true
         }
     }
 }
@@ -62,5 +78,16 @@ impl Recipe {
             output: output,
             fluid: fluid
         }
+    }
+
+    pub fn producable(&self, store: &Storage) -> bool {
+        let mut nstore = store.clone();
+
+        for i in &self.ingredients {
+            if !nstore.consume(*i) {
+                return false;
+            }
+        }
+        return true;
     }
 }
