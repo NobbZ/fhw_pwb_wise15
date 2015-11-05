@@ -3,6 +3,7 @@ name = "pwb_ws_15"
 version = "0.1.0"
 dependencies = [
  "peg 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "promising-future 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "ramp 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -35,6 +36,14 @@ version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "promising-future"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "threadpool 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "ramp"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -52,6 +61,11 @@ dependencies = [
  "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "threadpool"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "winapi"
