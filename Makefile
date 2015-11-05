@@ -11,6 +11,9 @@ all: target/$(KIND)/pwb_runner
 clean:
 	@cargo clean -p pwb_ws_15
 
+test: clean
+	@cargo test
+
 rebuild: clean all
 
 run:
