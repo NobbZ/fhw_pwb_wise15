@@ -4,10 +4,14 @@ else
 KIND=release
 endif
 
-.PHONY: all run name target/debug/pwb_runner target/build/pwb_runner
+.PHONY: all run name target/debug/pwb_runner target/build/pwb_runner clean
 
 all: target/$(KIND)/pwb_runner
-	@echo $(KIND)
+
+clean:
+	@cargo clean -p pwb_ws_15
+
+rebuild: clean all
 
 run:
 	@target/$(KIND)/pwb_runner
