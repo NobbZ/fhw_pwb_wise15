@@ -52,13 +52,21 @@ impl Storage {
         }
     }
 
-
     pub fn consume(&mut self, id: usize) -> bool {
         if self.store[id] == 0 {
             false
         } else {
             self.store[id] = self.store[id] - 1;
             true
+        }
+    }
+
+    pub fn heat(&mut self, amount: usize) -> bool {
+        if self.fluid >= amount {
+            self.fluid -= amount;
+            true
+        } else {
+            false
         }
     }
 }
