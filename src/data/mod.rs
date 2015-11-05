@@ -1,6 +1,9 @@
 //! Datatypes used for Bookkeeping stuff.
 
 pub mod tree;
+pub mod storage;
+
+use self::storage::Storage;
 
 /// A list of the items values.
 ///
@@ -8,16 +11,6 @@ pub mod tree;
 #[derive(PartialEq,Eq,Debug)]
 pub struct Values {
     val: Vec<isize>
-}
-
-
-/// A list of amounts that are in storage.
-///
-/// The number of items of item x is at position x of the Storage
-#[derive(PartialEq,Eq,Debug,Clone)]
-pub struct Storage {
-    store: Vec<usize>,
-    fluid: usize,
 }
 
 /// What recipes are available during this game round?
@@ -40,33 +33,6 @@ impl Values {
     pub fn new(content: Vec<isize>) -> Self {
         Values {
             val: content
-        }
-    }
-}
-
-impl Storage {
-    pub fn new(content: Vec<usize>) -> Self {
-        Storage {
-            store: content,
-            fluid: 0,
-        }
-    }
-
-    pub fn consume(&mut self, id: usize) -> bool {
-        if self.store[id] == 0 {
-            false
-        } else {
-            self.store[id] = self.store[id] - 1;
-            true
-        }
-    }
-
-    pub fn heat(&mut self, amount: usize) -> bool {
-        if self.fluid >= amount {
-            self.fluid -= amount;
-            true
-        } else {
-            false
         }
     }
 }

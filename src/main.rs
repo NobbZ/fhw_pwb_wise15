@@ -5,7 +5,6 @@ extern crate pwb_ws_15 as pwb;
 use std::io;
 
 use pwb::parser;
-use pwb::data::{Values,Storage};
 
 fn main() {
     let mut line = String::new();

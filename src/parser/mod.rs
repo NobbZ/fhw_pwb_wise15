@@ -1,7 +1,9 @@
-use super::data::{Values,Storage,Recipes};
+use super::data::storage::Storage;
+use super::data::{Values,Recipes};
 
 peg! internal(r#"
-    use super::super::data::{Values,Storage,Recipes,Recipe};
+    use super::super::data::storage::Storage;
+    use super::super::data::{Values,Recipes,Recipe};
 
     #[pub]
     input -> (Values, Storage, Recipes, usize) =

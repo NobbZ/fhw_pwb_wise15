@@ -1,6 +1,7 @@
 extern crate pwb_ws_15 as sut;
 
-use sut::data::{Values,Storage,Recipes,Recipe};
+use sut::data::storage::Storage;
+use sut::data::{Values,Recipes,Recipe};
 use sut::parser::{values,storage,recipes,input};
 
 #[test]

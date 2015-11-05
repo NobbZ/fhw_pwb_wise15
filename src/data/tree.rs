@@ -1,6 +1,7 @@
 use ramp::int::Int;
 use std::sync::Arc;
-use super::{Storage,Recipes};
+use super::storage::Storage;
+use super::Recipes;
 
 pub struct Node {
     store: Storage,
