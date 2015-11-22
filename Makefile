@@ -1,8 +1,4 @@
-ifeq ($(LOGNAME), nmelzer)
 KIND=debug
-else
-KIND=release
-endif
 
 .PHONY: all run name target/debug/pwb_runner target/build/pwb_runner clean
 
@@ -22,8 +18,8 @@ run:
 name:
 	@echo "Wedel-Konstrukto.rs"
 
-target/debug/pwb_runner:
+target/debug/pwb_runner: clean
 	@cargo build
 
-target/release/pwb_runner:
+target/release/pwb_runner: clean
 	@cargo build --release

@@ -10,6 +10,7 @@ pub struct Node<'a> {
     values: &'a Values,
 }
 
+#[derive(Clone)]
 pub enum ChildLink<'a> {
     Producable(Option<Arc<Node<'a>>>),
     Impossible,
@@ -33,6 +34,10 @@ impl<'a> Node<'a> {
             children: children,
             values: vals,
         }
+    }
+
+    pub fn get_child_vec(&self) -> Vec<ChildLink> {
+        self.children.clone()
     }
 
     pub fn get_overall_value(&self) -> Int {
