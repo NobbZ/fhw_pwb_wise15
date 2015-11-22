@@ -6,7 +6,7 @@ dependencies = [
  "promising-future 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "quickcheck 0.2.24 (registry+https://github.com/rust-lang/crates.io-index)",
  "quickcheck_macros 0.2.24 (registry+https://github.com/rust-lang/crates.io-index)",
- "ramp 0.2.0 (git+https://github.com/Aatch/ramp.git)",
+ "ramp 0.2.3 (git+https://github.com/Aatch/ramp.git)",
 ]
 
 [[package]]
@@ -82,8 +82,8 @@ dependencies = [
 
 [[package]]
 name = "ramp"
-version = "0.2.0"
-source = "git+https://github.com/Aatch/ramp.git#ed25c92e066518ba5a3e2155895a3c6331ed25a7"
+version = "0.2.3"
+source = "git+https://github.com/Aatch/ramp.git#a7228cbb5c7aea34705b4ca6b1a37f4e34d6029a"
 dependencies = [
  "gcc 0.3.19 (registry+https://github.com/rust-lang/crates.io-index)",
  "hamming 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
