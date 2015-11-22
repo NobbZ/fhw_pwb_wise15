@@ -45,6 +45,11 @@ impl Storage {
         }
     }
 
+    pub fn produce(&self, id: usize) {
+        let mut nstore = self.store.borrow_mut();
+        nstore[id] += 1;
+    }
+
     pub fn heat(&self, amount: usize) -> bool {
         let fluid_available = self.fluid.get();
         if fluid_available >= amount {

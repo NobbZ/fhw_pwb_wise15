@@ -29,6 +29,10 @@ impl Recipes {
             val: content
         }
     }
+
+    pub fn count(&self) -> usize {
+        self.val.len()
+    }
 }
 
 impl Recipe {
@@ -38,6 +42,19 @@ impl Recipe {
             output: output,
             fluid: fluid
         }
+    }
+
+    pub fn produce(&self, store: &Storage) -> Storage {
+        let nstore = store.clone();
+
+        for i in &self.ingredients {
+            nstore.consume(*i);
+        }
+        for i in &self.output {
+            nstore.produce(*i);
+        }
+        nstore.heat(self.fluid);
+        nstore
     }
 
     pub fn producable(&self, store: &Storage) -> bool {
