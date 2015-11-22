@@ -1,12 +1,12 @@
 use ramp::int::Int;
 use std::cell::RefCell;
-use std::sync::Arc;
+use std::sync::{Arc,Mutex};
 use std::collections::HashMap;
 
 use data::storage::Storage;
 use data::values::Values;
 use data::Recipes;
-//
+
 // #[derive(Debug)]
 // pub struct Node<'a> {
 //     store: Storage,
@@ -23,6 +23,15 @@ pub enum ChildLink {
     Producable(Option<Box<Node>>),
     Impossible,
     Finished(Int, Vec<usize>)
+}
+
+impl ChildLink {
+    pub fn unwrap(&self) -> &Option<Box<Node>> {
+        match self {
+            &ChildLink::Producable(ref r) => r,
+            _ => panic!()
+        }
+    }
 }
 
 impl Node {
@@ -42,6 +51,17 @@ impl Node {
         Node {
             store: storage,
             children: children,
+        }
+    }
+
+    pub fn get_child_node<'a>(&'a mut self, idx: u32, values: &Values, recipes: &Recipes) -> &'a Option<Box<Self>> {
+        match self.children.get(&idx).unwrap() {
+            &ChildLink::Producable(None) => {
+                self.eval(idx, values, recipes);
+                self.children.get(&idx).unwrap().unwrap()
+            },
+            &ChildLink::Producable(Some(ref c)) => &Some(*c),
+            _ => &None
         }
     }
 
