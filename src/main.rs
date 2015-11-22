@@ -7,7 +7,7 @@ use std::sync::Mutex;
 
 use pwb::parser;
 
-use pwb::data::tree::Node;
+//use pwb::data::tree::Node;
 
 fn main() {
     let mut line = String::new();
@@ -26,14 +26,14 @@ fn main() {
     println!("{:?}", recipes);
     println!("{:?}", storage.get_fluid());
 
-    let mut root = Node::new(storage, &recipes);
-    println!("{:?}", root);
+    // let mut root = Node::new(storage, &recipes);
+    // println!("{:?}", root);
 
-    root.eval(1, &values, &recipes);
+    // root.eval(1, &values, &recipes);
 
-    println!("{:?}", root);
+    // println!("{:?}", root);
 
-    root.eval(0, &values, &recipes);
+    // root.eval(0, &values, &recipes);
 
-    println!("{:?}", root);
+    // println!("{:?}", root);
 }

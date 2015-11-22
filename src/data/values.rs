@@ -3,7 +3,7 @@ use std::slice::Iter;
 /// A list of the items values.
 ///
 /// The list is indexed by the ID of an item.
-#[derive(PartialEq,Eq,Debug)]
+#[derive(PartialEq,Eq,Debug,Default)]
 pub struct Values {
     val: Vec<isize>
 }

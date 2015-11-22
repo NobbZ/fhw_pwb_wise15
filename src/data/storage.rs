@@ -5,7 +5,7 @@ use data::iter::VecRefIter;
 /// A list of amounts that are in storage.
 ///
 /// The number of items of item x is at position x of the Storage
-#[derive(PartialEq,Eq,Debug,Clone)]
+#[derive(PartialEq,Eq,Debug,Clone,Default)]
 pub struct Storage {
     store: RefCell<Vec<usize>>,
     fluid: Cell<usize>,
