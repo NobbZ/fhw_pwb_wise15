@@ -1,4 +1,5 @@
 use ramp::int::Int;
+use std::cell::Cell;
 use std::cell::RefCell;
 use std::sync::{Arc,Mutex};
 use std::collections::HashMap;
@@ -16,7 +17,7 @@ use data::Recipes;
 #[derive(Debug,Clone)]
 pub struct Node {
     store: Storage,
-    children: HashMap<u32, ChildLink>,
+    children: HashMap<u32, RefCell<ChildLink>>,
 }
 #[derive(Debug,Clone)]
 pub enum ChildLink {
@@ -36,14 +37,14 @@ impl ChildLink {
 
 impl Node {
     pub fn new(storage: Storage, recipes: &Recipes) -> Self {
-        let mut children: HashMap<u32, ChildLink> = HashMap::with_capacity(recipes.count());
+        let mut children: HashMap<u32, RefCell<ChildLink>> = HashMap::with_capacity(recipes.count());
         let mut i: u32 = 0;
 
         for r in recipes.val.iter() {
             if r.producable(&storage) {
-                children.insert(i, ChildLink::Producable(None));
+                children.insert(i, RefCell::new(ChildLink::Producable(None)));
             } else {
-                children.insert(i, ChildLink::Impossible);
+                children.insert(i, RefCell::new(ChildLink::Impossible));
             }
             i = i + 1;
         }
@@ -54,24 +55,24 @@ impl Node {
         }
     }
 
-    pub fn get_child_node<'a>(&'a mut self, idx: u32, values: &Values, recipes: &Recipes) -> &'a Option<Box<Self>> {
-        match self.children.get(&idx).unwrap() {
-            &ChildLink::Producable(None) => {
+    pub fn get_child_node<'a>(&'a mut self, idx: u32, values: &Values, recipes: &Recipes) -> Option<Box<Self>> {
+        match *self.children.get(&idx).unwrap().borrow() {
+            ChildLink::Producable(None) => {
                 self.eval(idx, values, recipes);
-                self.children.get(&idx).unwrap().unwrap()
+                self.children.get(&idx).unwrap().borrow().unwrap().clone()
             },
-            &ChildLink::Producable(Some(ref c)) => &Some(*c),
-            _ => &None
+            ChildLink::Producable(Some(ref c)) => Some(c),
+            _ => None
         }
     }
 
     pub fn eval(&mut self, idx: u32, values: &Values, recipes: &Recipes) {
-        match self.children.get(&idx).unwrap() {
-            &ChildLink::Producable(None) => {
-                let nstore = recipes.val[idx as usize].produce(&self.store);
+        match *self.children.get(&idx).unwrap().borrow() {
+            ChildLink::Producable(None) => {
+                let nstore = recipes.val[idx as usize].produce(&self.store).unwrap();
                 let cnode = Box::new(Node::new(nstore, &recipes));
                 let mut a = self.children.get_mut(&idx).unwrap();
-                *a = ChildLink::Producable(Some(cnode.clone()));
+                *a = RefCell::new(ChildLink::Producable(Some(cnode.clone())));
             }
             _ => ()
         }

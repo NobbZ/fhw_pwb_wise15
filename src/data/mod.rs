@@ -1,14 +1,15 @@
 //! Datatypes used for Bookkeeping stuff.
 
 //pub mod tree;
-pub mod tree2;
-pub mod storage;
-pub mod values;
+//pub mod tree2;
+mod storage;
+mod values;
 pub mod iter;
 
 use std::slice::Iter;
 
-use data::storage::Storage;
+pub use data::storage::Storage;
+pub use data::values::Values;
 
 /// What recipes are available during this game round?
 #[derive(PartialEq,Eq,Debug,Default)]

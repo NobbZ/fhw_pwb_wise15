@@ -3,7 +3,6 @@
 extern crate pwb_ws_15 as pwb;
 
 use std::io;
-use std::sync::Mutex;
 
 use pwb::parser;
 

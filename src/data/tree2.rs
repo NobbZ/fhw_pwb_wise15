@@ -69,12 +69,12 @@ impl<'a> Node<'a> {
         match self {
             &mut Node::Pending(s, r, v) => {
                 match r.produce(s) {
-                    None => {self = &mut Node::Impossible;},
+                    None => {self = Node::Impossible;},
                     Some(s) => {
                         let mut cs: Vec<Option<Box<Node>>> = Vec::new();
                         let value = Int::zero();
 
-                        for r in
+                        //for r in
                     }
                 }
             },
@@ -83,10 +83,9 @@ impl<'a> Node<'a> {
     }
 
     pub fn get_child_at(&'a mut self, idx: Vec<usize>) -> Option<*mut Node> {
-        use self::Node as N;
         match self {
-            &mut N::Impossible => None,
-            &mut N::Pending(_,_,_) => {
+            &mut Node::Impossible => None,
+            &mut Node::Pending(_,_,_) => {
                 self.activate();
                 if idx.is_empty() {
                     Some(self)
@@ -94,6 +93,8 @@ impl<'a> Node<'a> {
                     self.get_child_at(idx)
                 }
             },
+            &mut Node::Active(_,_,_) => unimplemented!(),
+            &mut Node::Finished(_,_) => unimplemented!(),
         }
 
     }

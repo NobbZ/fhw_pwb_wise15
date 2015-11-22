@@ -1,8 +1,8 @@
 pub use parser::internal::{input,values,storage,recipes,fluid};
 
 peg! internal(r#"
-    use data::storage::Storage;
-    use data::values::Values;
+    use data::Storage;
+    use data::Values;
     use data::{Recipes,Recipe};
 
     #[pub]
