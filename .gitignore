@@ -1,2 +1,6 @@
+# Build artifacts
 target
+
+# IDE-Stuff
 .project
+.idea
