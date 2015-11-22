@@ -5,7 +5,7 @@ pub mod storage;
 pub mod values;
 pub mod iter;
 
-use self::storage::Storage;
+use data::storage::Storage;
 
 /// What recipes are available during this game round?
 #[derive(PartialEq,Eq,Debug)]

@@ -1,11 +1,9 @@
-use super::data::storage::Storage;
-use super::data::values::Values;
-use super::data::Recipes;
+pub use parser::internal::{input,values,storage,recipes,fluid};
 
 peg! internal(r#"
-    use super::super::data::storage::Storage;
-    use super::super::data::values::Values;
-    use super::super::data::{Recipes,Recipe};
+    use data::storage::Storage;
+    use data::values::Values;
+    use data::{Recipes,Recipe};
 
     #[pub]
     input -> (Values, Storage, Recipes) =
@@ -42,23 +40,3 @@ peg! internal(r#"
     nl -> () =
     	"\n" / "\r\n" / "\n\r"
 "#);
-
-pub fn input(input: &str) -> Result<(Values, Storage, Recipes), internal::ParseError> {
-    internal::input(input)
-}
-
-pub fn values(input: &str) -> Result<Values, internal::ParseError> {
-    internal::values(input)
-}
-
-pub fn storage(input: &str) -> Result<Storage, internal::ParseError> {
-    internal::storage(input)
-}
-
-pub fn recipes(input: &str) -> Result<Recipes, internal::ParseError> {
-    internal::recipes(input)
-}
-
-pub fn fluid(input: &str) -> Result<usize, internal::ParseError> {
-    internal::fluid(input)
-}
