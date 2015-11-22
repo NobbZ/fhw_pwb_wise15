@@ -51,17 +51,21 @@ impl Recipe {
         }
     }
 
-    pub fn produce(&self, store: &Storage) -> Storage {
+    pub fn produce(&self, store: &Storage) -> Option<Storage> {
         let nstore = store.clone();
 
         for i in &self.ingredients {
-            nstore.consume(*i);
+            if !nstore.consume(*i) {
+                return None;
+            }
+        }
+        if !nstore.heat(self.fluid) {
+            return None;
         }
         for i in &self.output {
             nstore.produce(*i);
         }
-        nstore.heat(self.fluid);
-        nstore
+        Some(nstore)
     }
 
     pub fn producable(&self, store: &Storage) -> bool {

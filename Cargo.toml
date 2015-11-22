@@ -8,5 +8,9 @@ name = "pwb_runner"
 
 [dependencies]
 peg = "~0.3.3"
-ramp = "~0.2.0"
+ramp = { git = "https://github.com/Aatch/ramp.git" }#"~0.2.0"
 promising-future = "~0.1.6"
+
+[dev-dependencies]
+quickcheck = "~0.2.0"
+quickcheck_macros = "~0.2.0"
