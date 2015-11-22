@@ -3,7 +3,7 @@
 extern crate pwb_ws_15 as pwb;
 
 use std::io;
-use std::collections::HashMap;
+use std::sync::Mutex;
 
 use pwb::parser;
 
@@ -30,6 +30,10 @@ fn main() {
     println!("{:?}", root);
 
     root.eval(1, &values, &recipes);
+
+    println!("{:?}", root);
+
+    root.eval(0, &values, &recipes);
 
     println!("{:?}", root);
 }
