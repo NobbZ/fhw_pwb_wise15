@@ -51,6 +51,10 @@ run:
 $(BIN): $(OBJFILES)
 	$(ESCRPTCMD)
 
+doc:
+	@$(DOCCMD)
+.PHONY: doc
+
 typecheck: $(PLTFILE) $(OTPPLTFILE)
 	$(DIALYZER) --plts $(OTPPLTFILE) $(PLTFILE) -Wrace_conditions --src $(SRCDIR)
 
