@@ -1,14 +1,16 @@
-use std::cell::{Cell,RefCell};
+use std::sync::Arc;
+use std::sync::Mutex;
+use std::sync::MutexGuard;
 
-use data::iter::VecRefIter;
+// use data::iter::VecRefIter;
 
 /// A list of amounts that are in storage.
 ///
 /// The number of items of item x is at position x of the Storage
-#[derive(PartialEq,Eq,Debug,Clone,Default)]
+#[derive(Debug,Clone)]
 pub struct Storage {
-    store: RefCell<Vec<usize>>,
-    fluid: Cell<usize>,
+    store: Arc<Mutex<Vec<usize>>>,
+    fluid: Arc<Mutex<usize>>,
 }
 
 impl Storage {
@@ -17,26 +19,26 @@ impl Storage {
     /// Please add some cooling fluid after creating the storage by using `set_fluid`.
     pub fn new(content: Vec<usize>) -> Self {
         Storage {
-            store: RefCell::new(content),
-            fluid: Cell::new(0),
+            store: Arc::new(Mutex::new(content)),
+            fluid: Arc::new(Mutex::new(0)),
         }
     }
 
-    pub fn get_content(&self) -> Vec<usize> {
-        (*self.store.borrow()).clone()
+    pub fn get_content(&self) -> MutexGuard<Vec<usize>> {
+        (*self.store).lock().unwrap()
     }
 
     pub fn set_fluid(self, fluid: usize) -> Self {
-        self.fluid.set(fluid);
+        *(*self.fluid).lock().unwrap() = fluid;
         self
     }
 
     pub fn get_fluid(&self) -> usize {
-        self.fluid.get()
+        *(*self.fluid).lock().unwrap()
     }
 
     pub fn consume(&self, id: usize) -> bool {
-        let mut nstore = self.store.borrow_mut();
+        let mut nstore = self.store.lock().unwrap();
         if nstore[id] == 0 {
             false
         } else {
@@ -46,21 +48,21 @@ impl Storage {
     }
 
     pub fn produce(&self, id: usize) {
-        let mut nstore = self.store.borrow_mut();
+        let mut nstore = self.store.lock().unwrap();
         nstore[id] += 1;
     }
 
     pub fn heat(&self, amount: usize) -> bool {
-        let fluid_available = self.fluid.get();
-        if fluid_available >= amount {
-            self.fluid.set(fluid_available - amount);
+        let mut fluid_available = self.fluid.lock().unwrap();
+        if *fluid_available >= amount {
+            *fluid_available -= amount;
             true
         } else {
             false
         }
     }
 
-    pub fn iter(&self) -> VecRefIter<usize> {
-        VecRefIter { r: self.store.borrow() }
-    }
+    // pub fn iter(&self) -> VecRefIter<usize> {
+    //     VecRefIter { r: self.store.borrow() }
+    // }
 }

@@ -1,9 +1,10 @@
 use data::Storage;
 
 use std::slice::Iter;
+use std::sync::Arc as Rc;
 
 /// What recipes are available during this game round?
-#[derive(PartialEq,Eq,Debug,Default)]
+#[derive(PartialEq,Eq,Debug,Default,Clone)]
 pub struct Recipes {
     val: Vec<Recipe>,
 }
@@ -11,7 +12,7 @@ pub struct Recipes {
 /// A recipe determines what ressources are consumed during a craft and which
 /// ones are produced, also it can tell you how much fluid will get consumed
 /// during this process.
-#[derive(PartialEq,Eq,Debug,Default)]
+#[derive(PartialEq,Eq,Debug,Default,Clone)]
 pub struct Recipe {
     ingredients: Vec<usize>,
     output: Vec<usize>,
@@ -43,7 +44,7 @@ impl Recipe {
         }
     }
 
-    pub fn produce(&self, store: &Storage) -> Option<Storage> {
+    pub fn produce(&self, store: Rc<Storage>) -> Option<Rc<Storage>> {
         let nstore = store.clone();
 
         for i in &self.ingredients {
