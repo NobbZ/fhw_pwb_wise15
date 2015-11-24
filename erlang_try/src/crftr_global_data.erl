@@ -15,11 +15,13 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 %% API
--export([]).
+-export([start/2, get_recipes/0, get_values/0]).
 
 -export_type([state/0]).
 
--type state() :: {cr_values:values(), cr_recipes:recipes()}.
+-record(state, {values :: cr_values:values()
+  ,             recipes :: cr_recipes:recipes()}).
+-opaque state() :: #state{}.
 -type calls() :: get_recipes | get_values.
 -type reply(A) :: {reply, A, state()}.
 -type reply() :: reply(cr_values:values()) | reply(cr_recipes:recipes()).
@@ -29,12 +31,25 @@
 -type reason() :: normal | shutdown | {shutdown, term()} | term().
 -type vsn() :: term() | {down, term()}.
 
+%% API
+-spec start(cr_values:values(), cr_recipes:recipes()) -> {ok, pid()}.
+start(Values, Recipes) ->
+  gen_server:start_link({local, state_info}, ?MODULE, {Values, Recipes}, []).
+
+get_values() ->
+  gen_server:call(state_info, get_values).
+
+get_recipes() ->
+  gen_server:call(state_info, get_recipes).
+
 %% Gen Server Callbacks
 -spec init(state()) -> {ok, state()}.
 init({Values, Recipes}) ->
   {ok, {Values, Recipes}}.
 
 -spec handle_call(calls(), {pid(), _}, state()) -> reply() | stop().
+handle_call(get_values, _, #state{values = V} = S) ->
+  {reply, V, S};
 handle_call(_Request, _From, State) ->
   {stop, "Unknown call", State}.
 

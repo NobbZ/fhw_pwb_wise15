@@ -12,8 +12,10 @@
 %% API
 -export([parse/1]).
 
+-export_type([values/0]).
+
 -record(values, {vals = array:new() :: array:array(integer())}).
--type values() :: #values{}.
+-opaque values() :: #values{}.
 
 -spec parse(string()) -> values().
 parse(Line) ->

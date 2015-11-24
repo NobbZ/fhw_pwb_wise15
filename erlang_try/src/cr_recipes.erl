@@ -31,7 +31,7 @@ parse(Line) ->
   RelaxedArray = array:from_list(ListOfValues),
   {recipes, array:fix(RelaxedArray)}.
 
--spec correctify(string()) -> string().
+-spec correctify(InputString :: string()) -> string().
 correctify([$(|T]) -> [${|correctify(T)];
 correctify([$)|T]) -> [$}|correctify(T)];
 correctify([H|T])  -> [H|correctify(T)];
