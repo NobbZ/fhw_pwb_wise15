@@ -10,5 +10,8 @@ ebin/
 # IDE stuff
 *.iml
 
+# Generated documentation
+doc/
+
 # Crash dumps and temporary files
 erl_crash.dump
