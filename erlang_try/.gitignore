@@ -1,0 +1,14 @@
+# Cache directories
+.rebar
+.vagrant
+
+# Build artifacts
+ebin/
+.global_plt.*
+*.plt
+
+# IDE stuff
+*.iml
+
+# Crash dumps and temporary files
+erl_crash.dump

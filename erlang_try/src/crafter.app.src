@@ -1,0 +1,10 @@
+{application, crafter,
+  [
+    {description, ""},
+    {vsn, "0.0.1"},
+    {registered, []},
+    {applications, [
+    ]},
+    {mod, {crafter_app, []}},
+    {env, []}
+  ]}.
