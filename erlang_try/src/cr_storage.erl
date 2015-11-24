@@ -15,8 +15,9 @@
 -export_type([storage/0, fluid/0]).
 
 -type(fluid() :: non_neg_integer()).
+-type(item_id() :: non_neg_integer()).
 
--record(storage, {storage = array:new() :: array:array(integer())
+-record(storage, {storage = array:new() :: array:array(item_id())
   ,               fluid = 0 :: fluid()}).
 
 -opaque(storage() :: #storage{}).
