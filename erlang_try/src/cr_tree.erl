@@ -26,7 +26,7 @@
 -type(entry() :: {key_type(), node() | path_info()}).
 -type(table_row() :: {key_type(), node_entry()}).
 
--type(get_node() :: key_type()).
+-type(get_node() :: {get_node, key_type()}).
 
 %% gen_server
 -export([code_change/3, handle_call/3, handle_cast/2, handle_info/2, init/1,
@@ -50,20 +50,29 @@ get_child(NodeId, ChildIdx) ->
   void.
 
 -spec get_value(Node :: node() | path_info() | key_type()) -> cr_values:value().
-get_value(#node{value = V}) -> V;
+get_value(#node{value = V})      -> V;
 get_value(#path_info{value = V}) -> V;
 get_value(NodeId) when is_integer(NodeId) andalso NodeId >= 0 ->
-  get_value(get_node(NodeId)).
+  case get_node(NodeId) of
+    unknown -> unknown;
+    Node -> get_value(Node)
+  end.
 
 %% gen_server callbacks
 -spec(code_change(_, _, _) -> {ok, _}).
 code_change(_, State, _) -> {ok, State}.
 
--spec(handle_call(get_node(), _, ets:tid()) -> {reply, Reply, ets:tid()}
-  when Reply :: node() | path_info()).
+-spec(handle_call(FunctionCall, _, TID) -> {reply, Reply, TID} when
+  FunctionCall :: get_node(),
+  TID :: ets:tid(),
+  Reply :: NodeInfo,
+  NodeInfo :: node() | path_info() | unknown).
 handle_call({get_node, NodeId}, _, Table) ->
-  [{_Id, NodeContent}] = ets:lookup(Table, NodeId),
-  {reply, NodeContent, Table}.
+  Reply = case ets:lookup(Table, NodeId) of
+    [{_Id, NodeContent}] -> NodeContent;
+    _ -> unknown
+  end,
+  {reply, Reply, Table}.
 
 -spec(handle_cast(_, S) -> {noreply, S}).
 handle_cast(_, S) -> {noreply, S}.
