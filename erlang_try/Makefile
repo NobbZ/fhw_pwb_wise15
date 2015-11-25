@@ -45,6 +45,14 @@ all: $(REBAR)
 	@$(COMPILECMD) # > /dev/null 2> /dev/null
 .PHONY: all
 
+clean:
+	@$(CLEANCMD)
+	@rm -rf $(PLTFILE)
+.PHONY: clean
+
+rebuild: clean all
+.PHONY: rebuild
+
 run:
 	$(ERLANG) $(ERLRUNOPTS) -eval '$(APPSTART)' # 2> /dev/null
 
