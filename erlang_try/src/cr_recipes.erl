@@ -13,7 +13,7 @@
 %% API
 -export([parse/1]).
 
--export_type([recipes/0, recipe/0]).
+-export_type([recipes/0, recipe/0, recipe_id/0]).
 
 %% @type recipe(). A recipe holds the instruction to produce some output from
 %%   some input.
@@ -25,6 +25,8 @@
 %% @type recipes(). Does contain all known recipes.
 -record(recipes, {rcps = array:new() :: array()}). % Dialyzer 2.6 doesn't know about array/1
 -opaque recipes() :: #recipes{}.
+
+-type recipe_id() :: non_neg_integer().
 
 %% @doc Parses some given string into a bunch of {@link recipe().
 %%   <code>recipe()</code>s}.
