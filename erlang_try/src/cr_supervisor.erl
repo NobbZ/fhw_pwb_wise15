@@ -19,4 +19,5 @@
 
 -define(CHILDSPEC(ChildName, Starter), {}).
 
+-spec(init(_) -> {ok, {{one_for_one, 1, 5}, []}}).
 init(_) -> {ok, {{one_for_one, 1, 5}, []}}.

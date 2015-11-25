@@ -12,7 +12,8 @@
 -behaviour(gen_server).
 
 %% Gen Server
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2,
+         code_change/3]).
 
 %% API
 -export([start/2, get_recipes/0, get_values/0]).
@@ -36,9 +37,11 @@
 start(Values, Recipes) ->
   gen_server:start_link({local, state_info}, ?MODULE, {Values, Recipes}, []).
 
+-spec(get_values() -> cr_values:values()).
 get_values() ->
   gen_server:call(state_info, get_values).
 
+-spec(get_recipes() -> cr_recipes:recipes()).
 get_recipes() ->
   gen_server:call(state_info, get_recipes).
 
