@@ -14,7 +14,7 @@
 
 -export_type([values/0]).
 
--record(values, {vals = array:new() :: array:array(integer())}).
+-record(values, {vals = array:new() :: array()}).
 -opaque values() :: #values{}.
 
 -spec parse(string()) -> values().

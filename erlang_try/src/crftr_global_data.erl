@@ -43,9 +43,9 @@ get_recipes() ->
   gen_server:call(state_info, get_recipes).
 
 %% Gen Server Callbacks
--spec init(state()) -> {ok, state()}.
+-spec init({cr_values:values(), cr_recipes:recipes()}) -> {ok, state()}.
 init({Values, Recipes}) ->
-  {ok, {Values, Recipes}}.
+  {ok, #state{values = Values, recipes = Recipes}}.
 
 -spec handle_call(calls(), {pid(), _}, state()) -> reply() | stop().
 handle_call(get_values, _, #state{values = V} = S) ->

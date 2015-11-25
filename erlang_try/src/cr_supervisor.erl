@@ -11,9 +11,12 @@
 
 -behaviour(supervisor).
 
+%% Supervisor
+-export([init/1]).
+
 %% API
 -export([]).
 
 -define(CHILDSPEC(ChildName, Starter), {}).
 
-
+init(_) -> {ok, {{one_for_one, 1, 5}, []}}.

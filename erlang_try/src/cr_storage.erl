@@ -12,12 +12,12 @@
 %% API
 -export([parse/1, add_fluid_to_storage/2]).
 
--export_type([storage/0, fluid/0]).
+-export_type([storage/0, fluid/0, item_id/0]).
 
 -type(fluid() :: non_neg_integer()).
 -type(item_id() :: non_neg_integer()).
 
--record(storage, {storage = array:new() :: array:array(item_id())
+-record(storage, {storage = array:new() :: array() % Dialyzer 2.6 doesn't know about array:array/1
   ,               fluid = 0 :: fluid()}).
 
 -opaque(storage() :: #storage{}).

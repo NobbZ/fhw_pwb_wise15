@@ -23,7 +23,7 @@
 -opaque recipe() :: #recipe{}.
 
 %% @type recipes(). Does contain all known recipes.
--record(recipes, {rcps = array:new() :: array:array(recipe())}).
+-record(recipes, {rcps = array:new() :: array()}). % Dialyzer 2.6 doesn't know about array/1
 -opaque recipes() :: #recipes{}.
 
 %% @doc Parses some given string into a bunch of {@link recipe().
