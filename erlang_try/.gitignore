@@ -15,3 +15,4 @@ doc/
 
 # Crash dumps and temporary files
 erl_crash.dump
+*~
