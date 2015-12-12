@@ -50,8 +50,12 @@ BEAMFILES   = $(MODULES:%=ebin/%.beam)
 all: $(BEAMFILES) $(APPSPEC)
 
 clean: $(PLTFILE:%=clean_plt_%) $(TESTBEAMS:ebin/%.beam=clean_mod_%) $(MODULES:%=clean_mod_%) \
-	clean_spec clean_dir_ebin clean_dir_doc
+	clean_spec clean_dir_ebin clean_dir_doc clean_dep_proper
 .PHONY: clean
+
+clean_dep_%:
+	rm -rfv $*/doc
+	rm -rfv $*/ebin
 
 clean_plt_%:
 	rm -f $*
@@ -92,9 +96,10 @@ test: eunit props
 
 eunit: $(TESTBEAMS) $(BEAMFILES) $(MODULES:%=run_test_%)
 
-props: $(PROPBEAMS:ebin/%.beam=run_prop_%)
+props: $(PROPBEAMS:ebin/%.beam=run_prop_%) | proper/ebin
 
-run_prop_%_props: ebin/%_props.beam ebin/%.beam
+run_prop_%: ERL_LIBS=$(shell pwd)/proper/
+run_prop_%_props: ebin/%_props.beam ebin/%.beam | proper/ebin
 	@$(ERLANG) -noshell -pa ebin -eval '$*_props:runner().' -s init stop
 
 run_test_%: ebin/%.beam ebin/%_tests.beam
@@ -106,7 +111,8 @@ $(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR)
 $(TESTBEAMS): ebin/%.beam: test/%.erl | $(BEAMDIR)
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
-$(PROPBEAMS): ebin/%.beam: properties/%.erl
+#ebin/%.beam: ERL_LIBS=$(shell pwd)/proper/
+$(PROPBEAMS): ebin/%.beam: properties/%.erl | $(BEAMDIR) proper/ebin
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
 $(APPSPEC): src/crafter.app | ebin
@@ -114,3 +120,6 @@ $(APPSPEC): src/crafter.app | ebin
 
 $(BEAMDIR):
 	mkdir $@
+
+proper/ebin:
+	cd proper; make fast
