@@ -1,14 +1,5 @@
 NAME = WorldOfErlcraft
 
-REBAR = ./rebar
-DEPSLVCMD  = $(REBAR) get-deps
-COMPILECMD = $(REBAR) compile
-CLEANCMD   = $(REBAR) clean
-DOCCMD     = $(REBAR) doc
-ESCRPTCMD  = $(REBAR) escriptize
-TESTCMD    = $(REBAR) eunit
-REPLCMD    = $(REBAR) shell
-
 DEPSDIR = deps
 DEPS    = $(wildcard $(DEPSDIR)/*)
 DEPSBIN = $(DEPS:%=%/ebin)
@@ -24,7 +15,9 @@ SYSTHREADS = 10
 
 SRCDIR      = src
 ERLFILES    = $(wildcard $(SRCDIR)/*.erl)
+TESTSRC     = $(wildcard test/*_tests.erl)
 BEAMFILES   = $(ERLFILES:$(SRCDIR)/%.erl=$(BEAMDIR)/%.beam)
+TESTBEAMS   = $(TESTSRC:test/%.erl=$(BEAMDIR)/%.beam)
 APPSRCFILES = $(wildcard $(SRCDIR)/*.app.src)
 APPFILES    = $(APPSRCFILES:$(SRCDIR)/%.src=$(BEAMDIR)/%)
 
@@ -44,7 +37,8 @@ PLTFILE     = $(NODENAME).plt
 ERLWARN  = unused_vars export_all shadow_vars unused_import unused_function \
 	bif_clash unused_record deprecated_function obselete_guard export_vars \
 	exported_vars
-ERLCOPTS = $(ERLWARN:%=+warn_%) +native +'{hipe, [o3]}' +compressed +verbose
+ERLCOPTS = $(ERLWARN:%=+warn_%) +native +'{hipe, [o3]}' +compressed +verbose \
+	+no_strict_record_tests -Iinclude
 
 APPSPEC     = ebin/crafter.app
 SOURCEFILES = $(wildcard src/*.erl)
@@ -79,7 +73,8 @@ $(BIN): $(OBJFILES)
 	$(ESCRPTCMD)
 
 doc:
-	@$(DOCCMD)
+	$(ERLANG) -noshell -run edoc_run application "'$(NODENAME)'" \
+		'"."' '[{def,{vsn,"0.0.1"}}]'
 .PHONY: doc
 
 typecheck: $(PLTFILE) $(OTPPLTFILE)
@@ -91,10 +86,18 @@ $(PLTFILE): all
 $(OTPPLTFILE):
 	$(DIALYZER) --output_plt $@ --build_plt --apps edoc erts eunit kernel mnesia stdlib tools webtool xmerl
 
-test:
-	$(TESTCMD) --verbose
+test: $(TESTBEAMS) $(BEAMFILES) $(MODULES:%=run_test_%)
 
-$(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR) Makefile
+testbin/%.beam: src/%.erl
+	$(ERLC) -DTEST $(ERLCOPTS) -o testbin $<
+
+run_test_%: ebin/%.beam ebin/%_tests.beam
+	@$(ERLANG) -noshell -pa ebin -eval 'eunit:test({inparallel, $*}, [verbose]).' -s init stop
+
+$(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR)
+	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
+
+$(TESTBEAMS): ebin/%.beam: test/%.erl | $(BEAMDIR)
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
 $(APPSPEC): src/crafter.app | ebin Makefile
