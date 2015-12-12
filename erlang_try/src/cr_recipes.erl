@@ -11,7 +11,7 @@
 -author("Norbert Melzer").
 
 %% API
--export([parse/1]).
+-export([parse/1, is_recipe/1, recipe_equals/2]).
 
 -export_type([recipes/0, recipe/0, recipe_id/0]).
 
@@ -39,6 +39,20 @@ parse(Line) ->
   ListOfRecipes = lists:map(fun convert_tuple_to_recipe/1, ListOfValues),
   RelaxedArray = array:from_list(ListOfRecipes),
   #recipes{rcps = array:fix(RelaxedArray)}.
+
+-spec is_recipe(term()) -> boolean().
+is_recipe(#recipe{}) -> true;
+is_recipe(_)         -> false.
+
+-spec is_recipes(term()) -> boolean().
+is_recipes(#recipes{}) -> true;
+is_recipes(_)          -> false.
+
+-spec recipe_equals(recipe(), recipe()) -> boolean().
+recipe_equals(L, R) ->
+  lists:sort(L#recipe.consumes) == lists:sort(R#recipe.consumes)
+  andalso lists:sort(L#recipe.produces) == lists:sort(R#recipe.produces)
+  andalso L#recipe.fluid_cost == R#recipe.fluid_cost.
 
 %%% PRIVATE STUFF!
 
