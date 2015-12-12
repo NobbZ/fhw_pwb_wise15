@@ -16,8 +16,10 @@ SYSTHREADS = 10
 SRCDIR      = src
 ERLFILES    = $(wildcard $(SRCDIR)/*.erl)
 TESTSRC     = $(wildcard test/*_tests.erl)
+PROPSRC     = $(wildcard properties/*_props.erl)
 BEAMFILES   = $(ERLFILES:$(SRCDIR)/%.erl=$(BEAMDIR)/%.beam)
 TESTBEAMS   = $(TESTSRC:test/%.erl=$(BEAMDIR)/%.beam)
+PROPBEAMS   = $(PROPSRC:properties/%.erl=$(BEAMDIR)/%.beam)
 APPSRCFILES = $(wildcard $(SRCDIR)/*.app.src)
 APPFILES    = $(APPSRCFILES:$(SRCDIR)/%.src=$(BEAMDIR)/%)
 
@@ -86,7 +88,14 @@ $(PLTFILE): all
 $(OTPPLTFILE):
 	$(DIALYZER) --output_plt $@ --build_plt --apps edoc erts eunit kernel mnesia stdlib tools webtool xmerl
 
-test: $(TESTBEAMS) $(BEAMFILES) $(MODULES:%=run_test_%)
+test: eunit props
+
+eunit: $(TESTBEAMS) $(BEAMFILES) $(MODULES:%=run_test_%)
+
+props: $(PROPBEAMS:ebin/%.beam=run_prop_%)
+
+run_prop_%_props: ebin/%_props.beam ebin/%.beam
+	@$(ERLANG) -noshell -pa ebin -eval '$*_props:runner().' -s init stop
 
 run_test_%: ebin/%.beam ebin/%_tests.beam
 	@$(ERLANG) -noshell -pa ebin -eval 'eunit:test($*, [verbose]).' -s init stop
@@ -95,6 +104,9 @@ $(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR)
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
 $(TESTBEAMS): ebin/%.beam: test/%.erl | $(BEAMDIR)
+	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
+
+$(PROPBEAMS): ebin/%.beam: properties/%.erl
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
 $(APPSPEC): src/crafter.app | ebin
