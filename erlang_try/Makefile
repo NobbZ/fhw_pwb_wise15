@@ -13,9 +13,10 @@ DEPSDIR = deps
 DEPS    = $(wildcard $(DEPSDIR)/*)
 DEPSBIN = $(DEPS:%=%/ebin)
 
-ERLANG  = erl
+ERLANG   = erl
+ERLC     = erlc
 DIALYZER = dialyzer
-BEAMDIR = ebin
+BEAMDIR  = ebin
 
 NODENAME = crafter
 
@@ -40,22 +41,39 @@ OTPVERSION  = $(shell erl -noshell -eval 'io:format(erlang:system_info(otp_relea
 OTPPLTFILE  = .global_plt.$(OTPVERSION)
 PLTFILE     = $(NODENAME).plt
 
-all: $(REBAR)
-	@$(DEPSLVCMD) # > /dev/null 2> /dev/null
-	@$(COMPILECMD) # > /dev/null 2> /dev/null
-.PHONY: all
+ERLWARN  = unused_vars export_all shadow_vars unused_import unused_function \
+	bif_clash unused_record deprecated_function obselete_guard export_vars \
+	exported_vars
+ERLCOPTS = $(ERLWARN:%=+warn_%) +native +'{hipe, [o3]}' +compressed +verbose
 
-clean:
-	@$(CLEANCMD)
-	@rm -rf $(PLTFILE)
-	@rm -rf doc
+APPSPEC     = ebin/crafter.app
+SOURCEFILES = $(wildcard src/*.erl)
+MODULES     = $(SOURCEFILES:src/%.erl=%)
+BEAMFILES   = $(MODULES:%=ebin/%.beam)
+
+all: $(BEAMFILES) $(APPSPEC)
+
+clean: $(PLTFILE:%=clean_plt_%) $(MODULES:%=clean_mod_%) clean_spec clean_dir_ebin \
+  clean_dir_doc
 .PHONY: clean
+
+clean_plt_%:
+	rm -f $*
+
+clean_mod_%:
+	rm -f $(*:%=ebin/%.beam)
+
+clean_spec:
+	rm -f $(APPSPEC)
+
+clean_dir_%:
+	rm -rfv $*
 
 rebuild: clean all
 .PHONY: rebuild
 
 run:
-	$(ERLANG) $(ERLRUNOPTS) -eval '$(APPSTART)' # 2> /dev/null
+	@$(ERLANG) $(ERLRUNOPTS) -eval '$(APPSTART)' # 2> /dev/null
 
 $(BIN): $(OBJFILES)
 	$(ESCRPTCMD)
@@ -75,3 +93,12 @@ $(OTPPLTFILE):
 
 test:
 	$(TESTCMD) --verbose
+
+$(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR) Makefile
+	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
+
+$(APPSPEC): src/crafter.app | ebin Makefile
+	cp $< $@
+
+$(BEAMDIR):
+	mkdir $@
