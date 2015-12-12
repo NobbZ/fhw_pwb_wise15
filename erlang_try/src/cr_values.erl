@@ -13,13 +13,8 @@
 %% API
 -export([parse/1]).
 
--export_type([values/0, value/0]).
+-record(values, {vals = array:new()}).
 
--record(values, {vals = array:new() :: array()}).
--opaque values() :: #values{}.
--type(value() :: integer()).
-
--spec parse(string()) -> values().
 parse(Line) ->
   Expr = string:concat(string:strip(Line, both), "."),
   {ok, Tokens, _} = erl_scan:string(Expr),

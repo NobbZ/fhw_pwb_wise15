@@ -11,33 +11,15 @@
 -author("nmelzer").
 
 %% API
--export([parse/1, add_fluid_to_storage/2, consume_item/2]).
-
--export_type([storage_content/0, storage/0, fluid/0, item_id/0]).
+-export([parse/1, add_fluid_to_storage/2, consume_item/2, produce_item/2]).
 
 -ifdef(TEST).
--include_lib("eqc/include/eqc.hrl").
 -include_lib("eunit/include/eunit.hrl").
 -endif.
 
-%% @type fluid() = non_neg_integer(). Describes amounts of fluids.
--type(fluid() :: non_neg_integer()).
-%% @type item_id() = non_neg_integer(). Describes how an items ID looks like.
--type(item_id() :: non_neg_integer()).
-
-%% @type storage_content(). Describes how the content of a storage actually looks.
-%%   It is safe to match on this type.
--opaque(storage_content() :: list(non_neg_integer())).
-
--record(storage, {storage = [] :: storage_content()
-  , fluid = 0 :: fluid()}).
-
-%% @type storage(). The datatype of an actual storrage.
--opaque(storage() :: #storage{}).
-
+-record(storage, {storage = [], fluid = 0}).
 
 %% @doc Parses the given `String' into a storage.
--spec parse(String :: string()) -> storage().
 parse(Line) ->
   Expr = string:concat(string:strip(Line, both), "."),
   {ok, Tokens, _} = erl_scan:string(Expr),
@@ -47,7 +29,6 @@ parse(Line) ->
 
 %% @doc Puts some amount of `Fluid' into the given `Store' and returns the
 %%   new one.
--spec add_fluid_to_storage(Store :: storage(), Fluid :: fluid()) -> storage().
 add_fluid_to_storage(#storage{fluid = OldFluid} = S, AddFluid) ->
   S#storage{fluid = OldFluid + AddFluid}.
 

@@ -15,7 +15,6 @@
 %% API
 -export([start/2, stop/1]).
 
--spec start(normal, _) -> {ok, pid()}.
 start(normal, _StartArgs) ->
   Cores = number_of_cores(),
   io:format("Cores: ~p~n", [Cores]),
@@ -30,7 +29,6 @@ start(normal, _StartArgs) ->
   io:format("FullStore: ~p~n", [InitialStorage]),
   {ok, self()}.
 
--spec stop(term()) -> ok.
 stop(_) ->
   ok.
 
