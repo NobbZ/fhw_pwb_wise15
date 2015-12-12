@@ -48,6 +48,7 @@ all: $(REBAR)
 clean:
 	@$(CLEANCMD)
 	@rm -rf $(PLTFILE)
+	@rm -rf doc
 .PHONY: clean
 
 rebuild: clean all
