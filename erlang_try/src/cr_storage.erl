@@ -15,15 +15,20 @@
 
 -export_type([storage/0, fluid/0, item_id/0]).
 
+%% @type fluid(). Describes amounts of fluids.
 -type(fluid() :: non_neg_integer()).
+%% @type item_id(). Describes how an items ID looks like.
 -type(item_id() :: non_neg_integer()).
 
--record(storage, {storage = array:new() :: array() % Dialyzer 2.6 doesn't know about array:array/1
-  ,               fluid = 0 :: fluid()}).
+-record(storage, {storage = [] :: list()
+  ,               fluid   = 0  :: fluid()}).
 
+%% @type storage(). The datatype of an actual storrage.
 -opaque(storage() :: #storage{}).
 
--spec parse(string()) -> storage().
+
+%% @doc Parses the given `String' into a storage.
+-spec parse(String :: string()) -> storage().
 parse(Line) ->
   Expr = string:concat(string:strip(Line, both), "."),
   {ok, Tokens, _} = erl_scan:string(Expr),
@@ -32,6 +37,8 @@ parse(Line) ->
   RelaxedArray = array:from_list(ListOfValues),
   #storage{storage = array:fix(RelaxedArray)}.
 
--spec add_fluid_to_storage(storage(), fluid()) -> storage().
+%% @doc Puts some amount of `Fluid' into the given `Store' and returns the
+%%   new one.
+-spec add_fluid_to_storage(Store :: storage(), Fluid :: fluid()) -> storage().
 add_fluid_to_storage(#storage{fluid = OldFluid} = S, AddFluid) ->
   S#storage{fluid = OldFluid + AddFluid}.
