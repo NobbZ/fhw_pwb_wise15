@@ -54,8 +54,8 @@ clean: $(PLTFILE:%=clean_plt_%) $(TESTBEAMS:ebin/%.beam=clean_mod_%) $(MODULES:%
 .PHONY: clean
 
 clean_dep_%:
-	rm -rfv $*/doc
-	rm -rfv $*/ebin
+	cd $*; make clean
+	rm -rfv $*/ebin/*.beam
 
 clean_plt_%:
 	rm -f $*
