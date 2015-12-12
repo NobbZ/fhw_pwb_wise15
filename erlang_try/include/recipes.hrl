@@ -1,0 +1,2 @@
+-record(recipe, {consumes = [] , produces = [], fluid_cost = 0}).
+-record(recipes, {rcps = []}).
