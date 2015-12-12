@@ -1,0 +1,2 @@
+-define(USE_ERL_SCAN_LINE, 1).
+-define(NO_MODULES_IN_OPAQUES, 1).
