@@ -50,7 +50,9 @@ convert_tuple_to_recipe({ListIn, ListOut, Fluid}) ->
 %% @doc Converts a string that uses haskell-like tuple syntax into one using
 %%   erlang-tuple-syntax.
 -spec correctify(InputString :: string()) -> string().
-correctify([$(|T]) -> [${|correctify(T)];
-correctify([$)|T]) -> [$}|correctify(T)];
-correctify([H|T])  -> [H|correctify(T)];
-correctify([])     -> [].
+correctify(L) -> correctify(L, []).
+
+correctify([], L) when is_list(L)     -> lists:reverse(L);
+correctify([$(|T], L) when is_list(L) -> correctify(T, [${|L]);
+correctify([$)|T], L) when is_list(L) -> correctify(T, [$}|L]);
+correctify([H|T], L) when is_list(L)  -> correctify(T, [H|L]).
