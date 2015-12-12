@@ -1,6 +1,7 @@
 %%%-------------------------------------------------------------------
-%%% @author nmelzer
-%%% @copyright (C) 2015, <COMPANY>
+%%% @author Norbert Melzer
+%%%   <inf100760@fh-wedel.de> [http://stud.fh-wedel.de/~inf100760/]
+%%% @copyright (C) 2015, Norbert Melzer
 %%% @doc
 %%%
 %%% @end
