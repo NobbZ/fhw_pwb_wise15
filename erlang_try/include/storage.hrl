@@ -1,0 +1,1 @@
+-record(storage, {storage = [], fluid = 0}).

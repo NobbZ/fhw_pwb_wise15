@@ -37,8 +37,8 @@ PLTFILE     = $(NODENAME).plt
 ERLWARN  = unused_vars export_all shadow_vars unused_import unused_function \
 	bif_clash unused_record deprecated_function obselete_guard export_vars \
 	exported_vars
-ERLCOPTS = $(ERLWARN:%=+warn_%) +native +'{hipe, [o3]}' +compressed +verbose \
-	+no_strict_record_tests -Iinclude
+ERLCOPTS = $(ERLWARN:%=+warn_%) +'{hipe, [o3]}' +compressed +verbose \
+	-Iinclude
 
 APPSPEC     = ebin/crafter.app
 SOURCEFILES = $(wildcard src/*.erl)
@@ -47,8 +47,8 @@ BEAMFILES   = $(MODULES:%=ebin/%.beam)
 
 all: $(BEAMFILES) $(APPSPEC)
 
-clean: $(PLTFILE:%=clean_plt_%) $(MODULES:%=clean_mod_%) clean_spec clean_dir_ebin \
-  clean_dir_doc
+clean: $(PLTFILE:%=clean_plt_%) $(TESTBEAMS:ebin/%.beam=clean_mod_%) $(MODULES:%=clean_mod_%) \
+	clean_spec clean_dir_ebin clean_dir_doc
 .PHONY: clean
 
 clean_plt_%:
@@ -88,11 +88,8 @@ $(OTPPLTFILE):
 
 test: $(TESTBEAMS) $(BEAMFILES) $(MODULES:%=run_test_%)
 
-testbin/%.beam: src/%.erl
-	$(ERLC) -DTEST $(ERLCOPTS) -o testbin $<
-
 run_test_%: ebin/%.beam ebin/%_tests.beam
-	@$(ERLANG) -noshell -pa ebin -eval 'eunit:test({inparallel, $*}, [verbose]).' -s init stop
+	@$(ERLANG) -noshell -pa ebin -eval 'eunit:test($*, [verbose]).' -s init stop
 
 $(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR)
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
@@ -100,7 +97,7 @@ $(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR)
 $(TESTBEAMS): ebin/%.beam: test/%.erl | $(BEAMDIR)
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
-$(APPSPEC): src/crafter.app | ebin Makefile
+$(APPSPEC): src/crafter.app | ebin
 	cp $< $@
 
 $(BEAMDIR):

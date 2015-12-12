@@ -13,11 +13,7 @@
 %% API
 -export([parse/1, add_fluid_to_storage/2, consume_item/2, produce_item/2]).
 
--ifdef(TEST).
--include_lib("eunit/include/eunit.hrl").
--endif.
-
--record(storage, {storage = [], fluid = 0}).
+-include("storage.hrl").
 
 %% @doc Parses the given `String' into a storage.
 parse(Line) ->
@@ -63,59 +59,3 @@ produce_item_from_list([], _, Acc)    -> lists:reverse(Acc);
 produce_item_from_list([H|T], 0, Acc) -> lists:reverse(Acc, [H + 1|T]);
 produce_item_from_list([H|T], I, Acc) ->
   produce_item_from_list(T, I - 1, [H|Acc]).
-
--ifdef(TEST).
-parse_empty_test() ->
-  Exp = #storage{},
-  Act = parse("[]"),
-  ?assertMatch(Exp, Act).
-
-parse_filled_test() ->
-  Exp = #storage{storage = [1,2,3,4,5]},
-  Act = parse("[1,2,3,4,5]"),
-  ?assertMatch(Exp, Act).
-
-consume_first_test() ->
-  Exp = #storage{storage = [0,2,3,4,5]},
-  Act = consume_item(#storage{storage = [1,2,3,4,5]}, 0),
-  ?assertMatch(Exp, Act).
-
-consume_middle_test() ->
-  Exp = #storage{storage = [1,2,2,4,5]},
-  Act = consume_item(#storage{storage = [1,2,3,4,5]}, 2),
-  ?assertMatch(Exp, Act).
-
-consume_last_test() ->
-  Exp = #storage{storage = [1,2,3,4,4]},
-  Act = consume_item(#storage{storage = [1,2,3,4,5]}, 4),
-  ?assertMatch(Exp, Act).
-
-consume_outside_test() ->
-  Exp = #storage{storage = [1,2,3,4,5]},
-  Act = consume_item(#storage{storage = [1,2,3,4,5]}, 5),
-  ?assertMatch(Exp, Act).
-
-consume_item_which_is_not_in_stock_test() ->
-  ?assertMatch(impossible, consume_item(#storage{storage = [0,0]}, 0)),
-  ?assertMatch(impossible, consume_item(#storage{storage = [0,0]}, 1)).
-
-produce_first_test() ->
-  Exp = #storage{storage = [2,2,3,4,5]},
-  Act = produce_item(#storage{storage = [1,2,3,4,5]}, 0),
-  ?assertMatch(Exp, Act).
-
-produce_middle_test() ->
-  Exp = #storage{storage = [1,2,4,4,5]},
-  Act = produce_item(#storage{storage = [1,2,3,4,5]}, 2),
-  ?assertMatch(Exp, Act).
-
-produce_last_test() ->
-  Exp = #storage{storage = [1,2,3,4,6]},
-  Act = produce_item(#storage{storage = [1,2,3,4,5]}, 4),
-  ?assertMatch(Exp, Act).
-
-produce_outside_test() ->
-  Exp = #storage{storage = [1,2,3,4,5]},
-  Act = produce_item(#storage{storage = [1,2,3,4,5]}, 5),
-  ?assertMatch(Exp, Act).
--endif.
