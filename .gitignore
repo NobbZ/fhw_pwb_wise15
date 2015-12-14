@@ -1,7 +1,24 @@
-# Build artifacts
-target
-*.o
+# Cache directories
+.rebar
+.vagrant
+.eunit
 
-# IDE-Stuff
-.project
+# Build artifacts
+ebin/
+*.beam
+.global_plt.*
+*.plt
+
+# IDE Stuff
+*.iml
 .idea
+
+# Generated documentation
+doc/
+
+# Logfiles
+logs/
+
+# Crash dumps and temporary files
+erl_crash.dump
+*~
