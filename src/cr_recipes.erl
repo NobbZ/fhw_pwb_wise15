@@ -11,7 +11,8 @@
 -author("Norbert Melzer").
 
 %% API
--export([parse/1, is_recipe/1, recipe_equals/2, is_recipes/1, apply_to_storage/2]).
+-export([parse/1, is_recipe/1, recipe_equals/2, is_recipes/1, apply_to_storage/2,
+  recipes_to_list/1, recipes_count/1, get_recipe/2]).
 
 -include("recipes.hrl").
 
@@ -55,6 +56,13 @@ apply_to_storage(#recipe{} = R, S) ->
       end, Store1, R#recipe.produces),
       cr_storage:burn_fluid(Store2, R#recipe.fluid_cost)
   end.
+
+recipes_to_list(#recipes{rcps = Rs}) -> Rs.
+
+recipes_count(#recipes{count = C}) -> C.
+
+get_recipe(#recipes{rcps = Rs, count = C}, Idx) when Idx =< C ->
+  lists:nth(Idx + 1, Rs).
 
 %%% PRIVATE STUFF!
 
