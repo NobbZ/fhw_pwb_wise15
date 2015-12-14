@@ -19,8 +19,7 @@
 %% API
 -export([start/2, get_recipes/0, get_values/0]).
 
-
--record(state, {values, recipes :: cr_recipes:recipes()}).
+-record(state, {values, recipes}).
 
 %% API
 start(Values, Recipes) ->

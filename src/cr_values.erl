@@ -11,14 +11,17 @@
 -author("nmelzer").
 
 %% API
--export([parse/1]).
+-export([parse/1, to_list/1, size/1]).
 
--record(values, {vals = array:new()}).
+-record(values, {vals = [], size = 0}).
+
+to_list(#values{vals = Vs}) -> Vs.
+
+size(#values{size = S}) -> S.
 
 parse(Line) ->
   Expr = string:concat(string:strip(Line, both), "."),
   {ok, Tokens, _} = erl_scan:string(Expr),
   {ok, [Form]} = erl_parse:parse_exprs(Tokens),
   {value, ListOfValues, _} = erl_eval:expr(Form, []),
-  RelaxedArray = array:from_list(ListOfValues),
-  {values, array:fix(RelaxedArray)}.
+  #values{vals = ListOfValues, size = length(ListOfValues)}.

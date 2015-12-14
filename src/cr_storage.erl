@@ -12,7 +12,9 @@
 
 %% API
 -export([parse/1, add_fluid_to_storage/2, consume_item/2, produce_item/2,
-  is_storage/1, burn_fluid/2]).
+  is_storage/1, burn_fluid/2, calc_value/2]).
+
+-export([sum_it_up/2]).
 
 -include("storage.hrl").
 
@@ -54,8 +56,24 @@ burn_fluid(#storage{fluid = F} = S, Amount) when Amount =< F ->
 burn_fluid(#storage{}, _) ->
   impossible.
 
+%% @doc Calculates the value of the current storage against the given list of
+%%   values.
+calc_value(impossible, _) -> void;
+calc_value(#storage{storage = S}, Values) ->
+  ValList = cr_values:to_list(Values),
+  sum_it_up(S, ValList).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% private helpers
+
+sum_it_up(S, V) -> sum_it_up(S, V, 0).
+
+sum_it_up([], [], Acc) -> Acc;
+sum_it_up([HS|TS], [HV|TV], Acc) when HV >= 0 ->
+  sum_it_up(TS, TV, HS * HV + Acc);
+sum_it_up([HS|TS], [HV|TV], Acc) when HV < 0 ->
+  ThisValue = HS * HV,
+  sum_it_up(TS, TV, Acc - ThisValue * ThisValue).
 
 consume_item_from_list([0|_], 0) -> impossible;
 consume_item_from_list([H|T], 0) -> [H - 1|T];

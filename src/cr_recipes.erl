@@ -22,7 +22,7 @@ parse(Line) ->
   {ok, [Form]} = erl_parse:parse_exprs(Tokens),
   {value, ListOfValues, _} = erl_eval:expr(Form, []),
   ListOfRecipes = lists:map(fun convert_tuple_to_recipe/1, ListOfValues),
-  #recipes{rcps = ListOfRecipes}.
+  #recipes{rcps = ListOfRecipes, count = length(ListOfRecipes)}.
 
 %% @doc Checks wether its argument is a valid {@link recipe()} or not.
 is_recipe(#recipe{consumes = C, produces = P, fluid_cost = F}) ->
