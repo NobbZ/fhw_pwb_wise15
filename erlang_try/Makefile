@@ -100,7 +100,7 @@ props: $(PROPBEAMS:ebin/%.beam=run_prop_%) | proper/ebin
 
 run_prop_%: ERL_LIBS=$(shell pwd)/proper/
 run_prop_%_props: ebin/%_props.beam ebin/%.beam | proper/ebin
-	@$(ERLANG) -noshell -pa ebin -eval '$*_props:runner().' -s init stop
+	@$(ERLANG) -noshell -pa ebin -eval 'proper:module($*_props, [verbose, 500]).' -s init stop
 
 run_test_%: ebin/%.beam ebin/%_tests.beam
 	@$(ERLANG) -noshell -pa ebin -eval 'eunit:test($*, [verbose]).' -s init stop
@@ -111,8 +111,8 @@ $(BEAMFILES): ebin/%.beam: src/%.erl | $(BEAMDIR)
 $(TESTBEAMS): ebin/%.beam: test/%.erl | $(BEAMDIR)
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
-#ebin/%.beam: ERL_LIBS=$(shell pwd)/proper/
-$(PROPBEAMS): ebin/%.beam: properties/%.erl | $(BEAMDIR) proper/ebin
+ebin/%.beam: ERL_LIBS=$(shell pwd)/proper/
+$(PROPBEAMS): ebin/%.beam: properties/%.erl | $(BEAMDIR) proper/ebin/*.beam
 	erlc $(ERLCOPTS) -o $(BEAMDIR) $<
 
 $(APPSPEC): src/crafter.app | ebin
@@ -121,5 +121,5 @@ $(APPSPEC): src/crafter.app | ebin
 $(BEAMDIR):
 	mkdir $@
 
-proper/ebin:
+proper/ebin/%.beam:
 	cd proper; make fast
