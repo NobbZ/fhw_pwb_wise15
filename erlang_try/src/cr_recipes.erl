@@ -11,7 +11,7 @@
 -author("Norbert Melzer").
 
 %% API
--export([parse/1, is_recipe/1, recipe_equals/2, is_recipes/1]).
+-export([parse/1, is_recipe/1, recipe_equals/2, is_recipes/1, apply_to_storage/2]).
 
 -include("recipes.hrl").
 
@@ -36,11 +36,25 @@ is_recipes(_)                   -> false.
 %% @doc checks wether two recipes are equal or not.
 %%   Will fail with `badarg' when one of its arguments is not a valid {@link recipe()}.
 %%   Two recipes will considered equal when they are consuming the same things and
-%%   produce the same things and they do consume the same amount of fluid.
+%%   produce the same things and they do consume the same amount of fluid.}
 recipe_equals(L, R) ->
   lists:sort(L#recipe.consumes) == lists:sort(R#recipe.consumes)
     andalso lists:sort(L#recipe.produces) == lists:sort(R#recipe.produces)
     andalso L#recipe.fluid_cost == R#recipe.fluid_cost.
+
+%% @doc Applies an recipe to a given storage.
+apply_to_storage(#recipe{} = R, S) ->
+  case cr_storage:is_storage(S) of
+    false -> error(badarg, [R, S]);
+    true  ->
+      Store1 = lists:foldl(fun(I, Store) ->
+        cr_storage:consume_item(Store, I)
+      end, S, R#recipe.consumes),
+      Store2 = lists:foldl(fun(I, Store) ->
+        cr_storage:produce_item(Store, I)
+      end, Store1, R#recipe.produces),
+      cr_storage:burn_fluid(Store2, R#recipe.fluid_cost)
+  end.
 
 %%% PRIVATE STUFF!
 

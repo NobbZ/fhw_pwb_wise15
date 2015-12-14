@@ -11,7 +11,8 @@
 -author("nmelzer").
 
 %% API
--export([parse/1, add_fluid_to_storage/2, consume_item/2, produce_item/2]).
+-export([parse/1, add_fluid_to_storage/2, consume_item/2, produce_item/2,
+  is_storage/1, burn_fluid/2]).
 
 -include("storage.hrl").
 
@@ -23,21 +24,35 @@ parse(Line) ->
   {value, ListOfValues, _} = erl_eval:expr(Form, []),
   #storage{storage = ListOfValues}.
 
+is_storage(#storage{storage = S, fluid = F}) when is_list(S) and (F >= 0) ->
+  true;
+is_storage(_) ->
+  false.
+
 %% @doc Puts some amount of `Fluid' into the given `Store' and returns the
 %%   new one.
 add_fluid_to_storage(#storage{fluid = OldFluid} = S, AddFluid) ->
   S#storage{fluid = OldFluid + AddFluid}.
 
 %% @doc Consumes exactly one piece of an item from the storage.
+consume_item(impossible, _) -> impossible;
 consume_item(#storage{storage = C} = S, ItemID) ->
   case consume_item_from_list(C, ItemID) of
     impossible -> impossible;
-    List       -> S#storage{storage = List}
+    List -> S#storage{storage = List}
   end.
 
 %% @doc Produces exactly one piece of an item into the storage.
+produce_item(impossible, _) -> impossible;
 produce_item(#storage{storage = C} = S, ItemID) ->
   S#storage{storage = produce_item_from_list(C, ItemID)}.
+
+%% @doc Burns some cooling fluid in the storage.
+burn_fluid(impossible, _) -> impossible;
+burn_fluid(#storage{fluid = F} = S, Amount) when Amount =< F ->
+  S#storage{fluid = F - Amount};
+burn_fluid(#storage{}, _) ->
+  impossible.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% private helpers
