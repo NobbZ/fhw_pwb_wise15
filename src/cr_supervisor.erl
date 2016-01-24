@@ -20,4 +20,13 @@
 
 -define(CHILDSPEC(ChildName, Starter), {}).
 
-init(_) -> {ok, {{one_for_one, 1, 5}, []}}.
+init({Values, Recipes, Storage}) ->
+  io:format("Initialising supervisor~n"),
+  Flags = {one_for_one, 1, 3600},
+  ChildSpecs = [
+    {glbl_data, {crftr_global_data, start, [Values, Recipes], permanent, brutal_kill, worker, [crftr_global_data]}},
+    {left_dfs, {cr_left_dfs, start, [Storage, Recipes, Values]}, permanent, brutal_kill, worker, [cr_left_dfs]}
+  ],
+  CS = {ok, {Flags, ChildSpecs}},
+  io:format("Stuff done in supervisor~n"),
+  CS.

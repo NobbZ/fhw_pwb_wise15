@@ -16,6 +16,7 @@
 -export([start/2, stop/1]).
 
 start(normal, _StartArgs) ->
+  observer:start(),
   Cores = number_of_cores(),
   io:format("Cores: ~p~n", [Cores]),
   %% crafter_supervisor:start_link(),
@@ -27,7 +28,13 @@ start(normal, _StartArgs) ->
   io:format("Recipes: ~p~n", [Recipes]),
   InitialStorage = cr_storage:add_fluid_to_storage(IntermediateStorage, read_fluid()),
   io:format("FullStore: ~p~n", [InitialStorage]),
+  %supervisor:start_link({local, supervisor}, cr_supervisor, {Values, Recipes, InitialStorage}),
+  crftr_global_data:start(Values, Recipes),
+  cr_left_dfs:start(InitialStorage, Recipes, Values),
+  %loop_forever(),
   {ok, self()}.
+
+loop_forever() -> loop_forever().
 
 stop(_) ->
   ok.

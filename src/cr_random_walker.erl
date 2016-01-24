@@ -27,6 +27,6 @@ walk(Values, Recipes, Storage, Value, Path) ->
   Path2 = [Step|Path],
   case cr_recipes:apply_to_storage(Recipe, Storage) of
     impossible -> io:format("~p~n", [lists:reverse(Path)]);
-    Storage2 ->
-  end
+    Storage2 -> {} % TODO
+  end.
 

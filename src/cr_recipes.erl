@@ -12,7 +12,7 @@
 
 %% API
 -export([parse/1, is_recipe/1, recipe_equals/2, is_recipes/1, apply_to_storage/2,
-  recipes_to_list/1, recipes_count/1, get_recipe/2]).
+  recipes_to_list/1, recipes_count/1, get_recipe/2, foldl/3]).
 
 -include("recipes.hrl").
 
@@ -46,7 +46,7 @@ recipe_equals(L, R) ->
 %% @doc Applies an recipe to a given storage.
 apply_to_storage(#recipe{} = R, S) ->
   case cr_storage:is_storage(S) of
-    false -> error(badarg, [R, S]);
+    false -> error;
     true  ->
       Store1 = lists:foldl(fun(I, Store) ->
         cr_storage:consume_item(Store, I)
@@ -64,7 +64,15 @@ recipes_count(#recipes{count = C}) -> C.
 get_recipe(#recipes{rcps = Rs, count = C}, Idx) when Idx =< C ->
   lists:nth(Idx + 1, Rs).
 
+foldl(Fun, Acc, #recipes{rcps = Rs}) when is_function(Fun, 3) ->
+  foldl(0, Fun, Acc, Rs).
+
 %%% PRIVATE STUFF!
+
+foldl(_Idx, _Fun, Acc, []) -> Acc;
+foldl(Idx,  Fun,  Acc, [R|Rs]) ->
+  foldl(Idx + 1, Fun, Fun(Idx, R, Acc), Rs).
+
 
 %% @doc Converts a tuple to a proper {@link recipe()}.
 convert_tuple_to_recipe({ListIn, ListOut, Fluid}) ->
