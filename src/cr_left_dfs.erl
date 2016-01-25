@@ -22,11 +22,15 @@ run(Storage, Recipes, Values, Path) ->
   InitialValue = cr_storage:calc_value(Storage, Values),
   put(max_score, InitialValue),
   crftr_global_data:print_solution(InitialValue, []),
-  cr_recipes:foldl(fun reducer/3, {Storage, Path}, Recipes).
+  cr_recipes:foldl(fun reducer/3, {Storage, Path}, Recipes),
+  %io:format("~p: ~p~n", [get(max_score), get(path)]),
+  crftr_global_data:print_solution(get(max_score), get(path)).
 
 reducer(Idx, R, {Storage, Path}) ->
   CurPath = [Idx|Path],
   CurStorage = cr_recipes:apply_to_storage(R, Storage),
+  %io:format("Current depth in ~p: ~p~n", [?MODULE_STRING, length(Path)]),
+  %io:format("~p~n", [CurPath]),
   case CurStorage of
     impossible -> {};
     _ ->
@@ -37,9 +41,12 @@ reducer(Idx, R, {Storage, Path}) ->
       case CurValue > get(max_score) of
         true ->
           put(max_score, CurValue),
+          put(path, CurPath),
           crftr_global_data:print_solution(CurValue, CurPath);
         false -> void
       end,
+      %io:format("Was score: ~p~n", [CurValue]),
       cr_recipes:foldl(fun reducer/3, {CurStorage, CurPath}, get(recipes))
   end,
+  %io:format("Going back depth in ~p: ~p~n", [?MODULE_STRING, length(Path)]),
   {Storage, Path}.
