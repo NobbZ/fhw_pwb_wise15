@@ -29,12 +29,13 @@ reducer(Idx, R, {Storage, Path}) ->
   CurStorage = cr_recipes:apply_to_storage(R, Storage),
   case CurStorage of
     impossible -> {};
-    _ -> CurValue = case CurStorage of
-      error -> get(max_score) - 100;
-      _     -> cr_storage:calc_value(CurStorage, get(values))
-    end,
+    _ ->
+      CurValue = case CurStorage of
+        error -> get(max_score) - 100;
+        _ -> cr_storage:calc_value(CurStorage, get(values))
+      end,
       case CurValue > get(max_score) of
-        true  ->
+        true ->
           put(max_score, CurValue),
           crftr_global_data:print_solution(CurValue, CurPath);
         false -> void
