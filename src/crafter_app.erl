@@ -17,7 +17,6 @@
 
 start(normal, _StartArgs) ->
   %observer:start(),
-  Cores = number_of_cores(),
   Values = read_values(),
   IntermediateStorage = read_storage(),
   Recipes = read_recipes(),
@@ -28,18 +27,16 @@ start(normal, _StartArgs) ->
   %loop_forever(),
   {ok, self()}.
 
-loop_forever() -> loop_forever().
-
 stop(_) ->
   ok.
 
-number_of_cores() ->
-  Fallback = 4,
-  case erlang:system_info(logical_processors_available) of
-    unknown -> Fallback;
-    C when C =< 0 -> Fallback;
-    C -> C
-  end.
+%% number_of_cores() ->
+%%   Fallback = 4,
+%%   case erlang:system_info(logical_processors_available) of
+%%     unknown -> Fallback;
+%%     C when C =< 0 -> Fallback;
+%%     C -> C
+%%   end.
 
 read_values() ->
   Line = io:get_line(""),
