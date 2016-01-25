@@ -13,23 +13,15 @@
 -export([start/3, run/4]).
 
 start(Storage, Recipes, Values) ->
-  io:format("Initialising ~s~n", [?MODULE]),
   spawn_link(?MODULE, run, [Storage, Recipes, Values, []]).
 
 run(Storage, Recipes, Values, Path) ->
-  io:format("And I'm in run~n"),
   put(root_storage, Storage), % \
-  io:format("Stored storage~n"),
   put(recipes, Recipes),      %  > Save for later use
-  io:format("Stored recipes~n"),
   put(values, Values),        % /
-  io:format("Stored values~n"),
   InitialValue = cr_storage:calc_value(Storage, Values),
   put(max_score, InitialValue),
-  io:format("Stored initialvalue~n"),
-  io:format("Before printing initial~n"),
   crftr_global_data:print_solution(InitialValue, []),
-  io:format("After printing initial~n"),
   cr_recipes:foldl(fun reducer/3, {Storage, Path}, Recipes).
 
 reducer(Idx, R, {Storage, Path}) ->
@@ -41,10 +33,8 @@ reducer(Idx, R, {Storage, Path}) ->
       error -> get(max_score) - 100;
       _     -> cr_storage:calc_value(CurStorage, get(values))
     end,
-      % io:format("~p~n", [CurValue]),
       case CurValue > get(max_score) of
         true  ->
-          %io:format("Max Value: ~p~n", CurValue),
           put(max_score, CurValue),
           crftr_global_data:print_solution(CurValue, CurPath);
         false -> void
