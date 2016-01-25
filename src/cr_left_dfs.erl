@@ -42,23 +42,3 @@ reducer(Idx, R, {Storage, Path}) ->
       cr_recipes:foldl(fun reducer/3, {CurStorage, CurPath}, get(recipes))
   end,
   {Storage, Path}.
-
-
-% run(Storage, Recipes, Values, Path) ->
-%  Process = fun(Idx, R, {Max, Path, MyStore, Fun}) ->
-%    CurrentStorage = cr_recipes:apply_to_storage(R, MyStore),
-%    CurrentValue = cr_storage:calc_value(CurrentStorage, Values),
-%    case CurrentValue of
-%      void ->
-%        {Max, Path, MyStore};
-%      Val ->
-%        case cr_recipes:foldl(Fun, {impossible, [Idx|Path], CurrentStorage, Fun}) of
-%          {impossible, _, _} ->
-%            crftr_global_data:print_solution(Val, [Idx|Path]);
-%          _ -> {Max, Path, MyStore}
-%        end
-%    end
-%  end,
-%  _CurrentValue = cr_storage:calc_value(Storage, Values),
-%  cr_recipes:foldl(Process, {impossible, Path, Storage, Process}, Recipes).
-
