@@ -44,7 +44,7 @@ reducer(Idx, R, {Storage, Path}) ->
       % io:format("~p~n", [CurValue]),
       case CurValue > get(max_score) of
         true  ->
-          io:format("Max Value: ~p~n", CurValue),
+          %io:format("Max Value: ~p~n", CurValue),
           put(max_score, CurValue),
           crftr_global_data:print_solution(CurValue, CurPath);
         false -> void

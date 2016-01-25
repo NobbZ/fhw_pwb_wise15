@@ -16,7 +16,7 @@
 -export([start/2, stop/1]).
 
 start(normal, _StartArgs) ->
-  observer:start(),
+  %observer:start(),
   Cores = number_of_cores(),
   io:format("Cores: ~p~n", [Cores]),
   %% crafter_supervisor:start_link(),
