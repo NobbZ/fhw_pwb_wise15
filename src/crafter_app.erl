@@ -24,6 +24,7 @@ start(normal, _StartArgs) ->
   %supervisor:start_link({local, supervisor}, cr_supervisor, {Values, Recipes, InitialStorage}),
   crftr_global_data:start(Values, Recipes),
   cr_left_dfs:start(InitialStorage, Recipes, Values),
+  cr_right_dfs:start(InitialStorage, Recipes, Values),
   %loop_forever(),
   {ok, self()}.
 
