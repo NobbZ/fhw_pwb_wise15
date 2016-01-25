@@ -45,7 +45,7 @@ handle_call(_Request, _From, State) ->
 
 handle_cast({print, Score, Path}, #state{max = MaxScore} = S) ->
   NewMax = case Score > MaxScore of
-    true -> print_path(Path), Score;
+    true -> print_path(Path), io:format(standard_error, "~p~n", [Score]), Score;
     false -> MaxScore
   end,
   {noreply, S#state{max = NewMax}};
