@@ -26,5 +26,4 @@ init({Values, Recipes, Storage}) ->
     {glbl_data, {crftr_global_data, start, [Values, Recipes], permanent, brutal_kill, worker, [crftr_global_data]}},
     {left_dfs, {cr_left_dfs, start, [Storage, Recipes, Values]}, permanent, brutal_kill, worker, [cr_left_dfs]}
   ],
-  CS = {ok, {Flags, ChildSpecs}},
-  CS.
+  {ok, {Flags, ChildSpecs}}.
