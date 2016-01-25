@@ -49,6 +49,9 @@ BEAMFILES   = $(MODULES:%=ebin/%.beam)
 
 all: $(BEAMFILES) $(APPSPEC)
 
+name:
+	@echo $(NAME)
+
 clean: $(PLTFILE:%=clean_plt_%) $(TESTBEAMS:ebin/%.beam=clean_mod_%) $(MODULES:%=clean_mod_%) \
 	clean_spec clean_dir_ebin clean_dir_doc clean_dep_proper
 .PHONY: clean
