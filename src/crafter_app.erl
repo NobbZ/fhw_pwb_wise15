@@ -25,6 +25,7 @@ start(normal, _StartArgs) ->
   crftr_global_data:start(Values, Recipes),
   cr_left_dfs:start(InitialStorage, Recipes, Values),
   cr_right_dfs:start(InitialStorage, Recipes, Values),
+  cr_bfs:start(InitialStorage, Recipes, Values),
   %loop_forever(),
   {ok, self()}.
 

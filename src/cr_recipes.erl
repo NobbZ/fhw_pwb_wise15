@@ -12,7 +12,7 @@
 
 %% API
 -export([parse/1, is_recipe/1, recipe_equals/2, is_recipes/1, apply_to_storage/2,
-  recipes_to_list/1, recipes_count/1, get_recipe/2, foldl/3, foldr/3]).
+  recipes_to_list/1, recipes_count/1, get_recipe/2, foldl/3, foldr/3, guess_score/2]).
 
 -include("recipes.hrl").
 
@@ -69,6 +69,13 @@ foldl(Fun, Acc, #recipes{rcps = Rs}) when is_function(Fun, 3) ->
 
 foldr(Fun, Acc, #recipes{rcps = Rs, count = C}) when is_function(Fun, 3) ->
   foldr(C - 1, Fun, Acc, lists:reverse(Rs)).
+
+guess_score(#recipe{consumes = C, produces = P, fluid_cost = F}, Vals) ->
+  DownVals = lists:map(fun(ID) -> cr_values:at(Vals, ID) end, C),
+  DownSum  = lists:sum(DownVals),
+  UpVals   = lists:map(fun(ID) -> cr_values:at(Vals, ID) end, P),
+  UpSum    = lists:sum(UpVals),
+  (-DownSum + UpSum) * cr_values:size(Vals) / F.
 
 %%% PRIVATE STUFF!
 
