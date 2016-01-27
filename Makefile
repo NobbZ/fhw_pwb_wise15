@@ -47,6 +47,9 @@ SOURCEFILES = $(wildcard src/*.erl)
 MODULES     = $(SOURCEFILES:src/%.erl=%)
 BEAMFILES   = $(MODULES:%=ebin/%.beam)
 
+EXAMPLESFULL = $(wildcard examples/%.txt)
+EXAMPLESNAME = $(EXAMPLESFULL:examples/%.txt)
+
 all: $(BEAMFILES) $(APPSPEC)
 
 name:
@@ -75,8 +78,11 @@ clean_dir_%:
 rebuild: clean all
 .PHONY: rebuild
 
-run:
+run: all
 	@$(ERLANG) $(ERLRUNOPTS) -eval '$(APPSTART)' # 2> /dev/null
+
+run_ex_%: all
+	(sleep 3; cat examples/$*.txt) | make run
 
 $(BIN): $(OBJFILES)
 	$(ESCRPTCMD)
